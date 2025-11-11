@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash
-from models import db # Also import your database model here
+from models import db, Movie # Also import your database model here
 
 # Define your routes inside the 'init_routes' function
 # Feel free to rename the routes and functions as you see fit
