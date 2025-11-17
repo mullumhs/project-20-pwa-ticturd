@@ -1,11 +1,95 @@
 <!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-  </body>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CRUD Operations</title>
+
+</head>
+
+<body>
+
+
+
+    <h1>Items</h1>
+
+
+
+    <!-- Display any message passed from the backend -->
+
+    {% if message %}
+
+        <p><strong>{{ message }}</strong></p>
+
+    {% endif %}
+
+
+
+    <!-- This will later display items from the database -->
+
+    <ul>
+
+        <li>Sample Item 1</li>
+
+        <li>Sample Item 2</li>
+
+    </ul>
+
+
+
+    <h2>Create Item</h2>
+
+    <!-- Form to create a new item, posts to /add -->
+
+    <form action="/add" method="POST">
+
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="director" placeholder="Director" required>
+        <input type="text" name="genre" placeholder="Genre" required>
+        <input type="date" name="release_date" placeholder="Release Date" required>
+        <input type="list" name="cast" placeholder="Cast" required>
+        <input type="text" name="image" placeholder="Image" required>
+        <button type="submit">Create</button>
+
+    </form>
+
+
+
+    <h2>Update Item</h2>
+
+    <!-- Form to update an existing item, posts to /update/<id> -->
+
+    <form action="/update" method="POST">
+
+        <input type="number" name="id" placeholder="Item ID" required>
+
+        <input type="text" name="name" placeholder="New Name" required>
+
+        <button type="submit">Update</button>
+
+    </form>
+
+
+
+    <h2>Delete Item</h2>
+
+    <!-- Form to delete an existing item, posts to /delete/<id> -->
+
+    <form action="/delete" method="POST">
+
+        <input type="number" name="id" placeholder="Item ID" required>
+
+        <button type="submit">Delete</button>
+
+    </form>
+
+
+
+</body>
+
 </html>
