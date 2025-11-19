@@ -34,9 +34,9 @@
 
     <ul>
 
-        <li>Sample Item 1</li>
-
-        <li>Sample Item 2</li>
+        {% for movie in movies%}
+        <li>{{ movie.title }}</li>
+        {% endfor %}
 
     </ul>
 

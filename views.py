@@ -21,18 +21,18 @@ def init_routes(app):
     @app.route('/add', methods=['POST'])
     def create_movie():
         # This route should handle adding a new item to the database.
-        if request.method == 'POST':
-            new_movie = Movie(
-                title = request.form['title'],
-                director = request.form['director'],
-                genre = request.form['genre'],
-                year = int(request.form['year']),
-                rating = float(request.form['rating']),
-                image = request.form['image'],
-                description = request.form['description'],
-            )
-            db.session.add(new_movie)
-            db.session.commit()
+
+        new_movie = Movie(
+            title = request.form['title'],
+            director = request.form['director'],
+            genre = request.form['genre'],
+            year = int(request.form['year']),
+            rating = float(request.form['rating']),
+            image = request.form['image'],
+            description = request.form['description'],
+        )
+        db.session.add(new_movie)
+        db.session.commit()
 
         
 
@@ -43,13 +43,13 @@ def init_routes(app):
     @app.route('/update', methods=['POST'])
     def update_item():
         # This route should handle updating an existing item identified by the given ID.
-        if request.form == 'POST':
-            movie_id = request.form['id']
-            movie = Movie.query.get_or_404(movie_id)
 
-            movie.title = request.form['name']
+        movie_id = request.form['id']
+        movie = Movie.query.get_or_404(movie_id)
 
-            db.session.commit()
+        movie.title = request.form['name']
+
+        db.session.commit()
 
         return render_template('index.html', message=f'Item updated successfully')
 
@@ -58,11 +58,11 @@ def init_routes(app):
     @app.route('/delete', methods=['POST'])
     def delete_item():
         # This route should handle deleting an existing item identified by the given ID.
-        if request.form == 'POST':
-            movie_id = request.form['id']
-            movie = Movie.query.get_or_404(movie_id)
 
-            db.session.delete(movie)
-            db.session.commit()
+        movie_id = request.form['id']
+        movie = Movie.query.get_or_404(movie_id)
+
+        db.session.delete(movie)
+        db.session.commit()
 
         return render_template('index.html', message=f'Item deleted successfully')
