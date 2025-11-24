@@ -16,6 +16,10 @@ class Movie(db.Model):
     description = db.Column(db.String, nullable = False)
 
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable = False)
+    password = db.Column(db.Text, nullable = False)
 
     def __repr__(self):
         return f'<Movie {self.title}>'

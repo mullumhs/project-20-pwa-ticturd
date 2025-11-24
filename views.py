@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash
-from models import db, Movie # Also import your database model here
+from models import db, Movie, User # Also import your database model here
 import datetime
 
 # Define your routes inside the 'init_routes' function
@@ -8,6 +8,7 @@ import datetime
 # You can use render_template or redirect as appropriate
 # You can also use flash for displaying status messages
 
+#-------------------------------------------Movie--------------------------------------------------------------
 def init_routes(app):
 
     @app.route('/', methods=['GET', 'POST'])
@@ -66,3 +67,19 @@ def init_routes(app):
         db.session.commit()
 
         return render_template('index.html', message=f'Item deleted successfully')
+    
+
+
+#--------------------------------------------------------Users----------------------------------------------------------------
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        if request.method == 'POST':
+            new_user = User(
+                username=request.form['username'],
+                password=request.form['password']
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            return render_template('users.html')
+        else:
+            return render_template('register.html')
