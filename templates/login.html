@@ -4,6 +4,13 @@
 
 {% block content %}
 <h1>Login</h1>
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% if message %}
+  <div class="alert alert-success">{{ message }}</div>
+{% endif %}
 <form action="{{ url_for('login') }}" method="POST">
   <div class="row mb-3">
     <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
@@ -21,8 +28,6 @@
 
   <button type="submit" class="btn btn-primary">Login</button>
 
-  {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
+
 </form>
 {% endblock %}
