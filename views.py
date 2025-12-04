@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from models import db, Movie, User # Also import your database model here
 import datetime
 
@@ -8,9 +8,17 @@ import datetime
 # You can use render_template or redirect as appropriate
 # You can also use flash for displaying status messages
 
-#--------------------------------------------------------Users----------------------------------------------------------------
-def init_routes(app):
 
+
+
+
+def init_routes(app):
+#--------------------------------------------------------Landing--------------------------------------------------------------------
+    @app.route('/')
+    def index():
+        return render_template('index.html')
+
+#--------------------------------------------------------Users----------------------------------------------------------------------
     @app.route('/register', methods=['GET', 'POST'])
     def register():
         if request.method == 'POST':
@@ -37,46 +45,57 @@ def init_routes(app):
             password = request.form['password']
 
             user = User.query.filter_by(username=username).first()
-            if user and user.get_password(password):    
-                session['user.id'] = user.id
-                return render_template('dashboard.html', user=user)
+            if user and user.check_password(password):    
+                session['user_id'] = user.id
+                return redirect(url_for('dashboard'))
             else:
                 return render_template('login.html', error="Invalid username or password.")
         else:
             return render_template('login.html')
         
+    @app.route('/logout', methods=['GET', 'POST'])
+    def logout():
+        session.pop('user_id')
+        return redirect(url_for('index'))
+#--------------------------------------------------Dashboard---------------------------------------------------------------
+
+
+    @app.route('/dashboard', methods=['GET', 'POST'])
+    def dashboard():
+        #Gets logged in user id
+        user_id = session.get('user_id')
+        if 'user_id' not in session:
+            return render_template('login.html', message="Please log in or register.")
+        user = User.query.get(user_id)
+
+        movies = Movie.query.filter_by(user_id=user_id).all()
+        return render_template('dashboard.html', message='Displaying all items', movies=movies, user=user)
+    
+
 
 #-------------------------------------------Movie--------------------------------------------------------------
-
-
-    @app.route('/', methods=['GET', 'POST'])
-    def get_items():
-        # This route should retrieve all items from the database and display them on the page.
-        movies = Movie.query.all()
-        return render_template('index.html', message='Displaying all items', movies=movies)
-
-
 
     @app.route('/add', methods=['POST'])
     def create_movie():
         # This route should handle adding a new item to the database.
+        if 'user_id' not in session:
+            return render_template('login.html', error="User ID not in session")
+        else:
+            new_movie = Movie(
+                title = request.form['title'],
+                director = request.form['director'],
+                genre = request.form['genre'],
+                year = int(request.form['year']),
+                rating = float(request.form['rating']),
+                image = request.form['image'],
+                description = request.form['description'],
+                user_id = session.get('user_id')
+            )
 
-        new_movie = Movie(
-            title = request.form['title'],
-            director = request.form['director'],
-            genre = request.form['genre'],
-            year = int(request.form['year']),
-            rating = float(request.form['rating']),
-            image = request.form['image'],
-            description = request.form['description'],
+            db.session.add(new_movie)
+            db.session.commit()
 
-        )
-        db.session.add(new_movie)
-        db.session.commit()
-
-        
-
-        return render_template('index.html', message='Item added successfully')
+            return redirect(url_for('dashboard'))
 
 
 
@@ -91,7 +110,7 @@ def init_routes(app):
 
         db.session.commit()
 
-        return render_template('index.html', message=f'Item updated successfully')
+        return redirect(url_for('dashboard'))
 
 
 
@@ -105,6 +124,6 @@ def init_routes(app):
         db.session.delete(movie)
         db.session.commit()
 
-        return render_template('index.html', message=f'Item deleted successfully')
+        return redirect(url_for('dashboard'))
     
 

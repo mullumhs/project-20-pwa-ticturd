@@ -27,7 +27,9 @@
 <ul>
 
     {% for movie in movies%}
+    {% if movie.user_id == user.id %}
     <li>{{ movie.title }}</li>
+    {% endif %}
     {% endfor %}
 
 </ul>
@@ -79,6 +81,10 @@
 
     <button type="submit">Delete</button>
 
+</form>
+
+<form action="{{ url_for('logout') }}" method="GET" style="margin-top: 20px;">
+    <button type="submit">Logout</button>
 </form>
 
 {% endblock %}
