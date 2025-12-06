@@ -15,6 +15,7 @@ class Movie(db.Model):
     image = db.Column(db.String, nullable=True)
     description = db.Column(db.String, nullable=False)
 
+    #Uses foreign key to grab user.id from the user model.
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     # Relationship back to User
@@ -32,9 +33,11 @@ class User(db.Model):
     # Relationship back to Movie
     movies = db.relationship('Movie', back_populates='user', lazy=True)
 
+    #Generates a hash for registered passwords.
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
+    #Compares entered password with hashed password when logging in.
     def check_password(self, password):
         return check_password_hash(self.password, password)
 

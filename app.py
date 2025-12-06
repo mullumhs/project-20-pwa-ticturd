@@ -8,6 +8,8 @@ app.secret_key = 'secret' #(Required for sessions, linking movies to user etc.)
 app.config['SECRET_KEY'] = 'dev'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///collection.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Initialise the database and routes
 db.init_app(app)
