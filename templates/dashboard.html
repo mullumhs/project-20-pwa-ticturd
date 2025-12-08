@@ -8,14 +8,12 @@
 
 <h2>Items:</h2>
 
-{% if message %}
-    <p><strong>{{ message }}</strong></p>
-{% endif %}
+
 
 <style>
 .image-drop-area {
     border: 2px dashed #6c757d;
-    margin-top: 25px;
+    margin-top: 10x;
     padding: 10px;
     text-align: center;
     cursor: pointer;
@@ -45,69 +43,47 @@ function previewDroppedImage(event, input) {
     {% for movie in movies %}
     {% if movie.user_id == user.id %}
 
-    <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-        {{ movie.title }}
+<div class="row align-items-start mt-4">
+    {% for movie in movies %}
+    {% if movie.user_id == user.id %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100" style="width: 18rem;">
+            {% if movie.image %}
+            <img src="{{ movie.image }}" class="card-img-top" alt="{{ movie.title }}">
+            {% else %}
+            <img src="https://via.placeholder.com/300x400?text=No+Image" class="card-img-top" alt="No image">
+            {% endif %}
 
-        <div class="dropdown">
-            <button class="btn btn-secondary btn-sm dropdown-toggle" 
-                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Options
-            </button>
+            <div class="card-body">
+                <h5 class="card-title">{{ movie.title }}</h5>
+                <p class="card-text">
+                    <strong>Director:</strong> {{ movie.director }} <br>
+                    <strong>Genre:</strong> {{ movie.genre }} <br>
+                    <strong>Year:</strong> {{ movie.year }} <br>
+                    <strong>Rating:</strong> {{ movie.rating }} <br>
+                    <strong>Description:</strong> {{ movie.description }}
+                </p>
 
-            <ul class="dropdown-menu">
-                <li>
-                    <button class="dropdown-item" data-bs-toggle="modal"
-                            data-bs-target="#viewModal{{ movie.id }}">
-                        View
-                    </button>
-                </li>
-
-                <li>
-                    <button class="dropdown-item" data-bs-toggle="modal"
-                            data-bs-target="#updateModal{{ movie.id }}">
+                <!-- Actions -->
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal{{ movie.id }}">
                         Update
                     </button>
-                </li>
 
-                <li>
-                    <form action="/delete" method="POST" style="margin: 0;">
+                    <form action="/delete" method="POST" style="margin:0;">
                         <input type="hidden" name="id" value="{{ movie.id }}">
-                        <button type="submit" class="dropdown-item text-danger">Remove</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                     </form>
-                </li>
-            </ul>
-        </div>
-    </li>
-
-    <!-- VIEW MODAL -->
-    <div class="modal fade" id="viewModal{{ movie.id }}" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ movie.title }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <div class="modal-body">
-                    <p><strong>Director:</strong> {{ movie.director }}</p>
-                    <p><strong>Genre:</strong> {{ movie.genre }}</p>
-                    <p><strong>Year:</strong> {{ movie.year }}</p>
-                    <p><strong>Rating:</strong> {{ movie.rating }}</p>
-                    <p><strong>Description:</strong> {{ movie.description }}</p>
-
-                    {% if movie.image %}
-                    <img src="{{ movie.image }}" class="img-fluid mt-2">
-                    {% endif %}
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-
             </div>
         </div>
     </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+
+
 
     <!-- UPDATE MODAL -->
     <div class="modal fade" id="updateModal{{ movie.id }}" tabindex="-1">

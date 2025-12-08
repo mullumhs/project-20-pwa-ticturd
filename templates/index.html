@@ -1,18 +1,4 @@
-<!DOCTYPE html>
 
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Movie Watchlist</title>
-
-</head>
-
-<body>
     {% extends "base.html" %}
 
     {% block title %}Home{% endblock %}
@@ -22,14 +8,20 @@
     <h1>Welcome to Movie Watchlist</h1>
 
     
-
+    <div class="row align-items-start">
+        {% for movie in movies %}
+    <div class="col">
+      <div class="card" style="width: 18rem;">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+    </div>
+    {% endfor %}
+  </div>
 
 
     {% endblock %}
-
-
-
-
-</body>
-
-</html>

@@ -75,7 +75,7 @@ def init_routes(app):
 
         #Queries movies for the specific user.
         movies = Movie.query.filter_by(user_id=user_id).all()
-        return render_template('dashboard.html', message='Displaying all items', movies=movies, user=user)
+        return render_template('dashboard.html', movies=movies, user=user)
     
 
 
