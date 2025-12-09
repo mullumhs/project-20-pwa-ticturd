@@ -75,8 +75,39 @@ def init_routes(app):
 
         #Queries movies for the specific user.
         movies = Movie.query.filter_by(user_id=user_id).all()
-        return render_template('dashboard.html', movies=movies, user=user)
+        return render_template('dashboard.html', movies=movies, user=user, filter_choice='title')
     
+    @app.route('/search', methods=['GET'])
+    def search():
+        user_id = session.get('user_id')
+        user = User.query.get(user_id)
+
+        filter_choice = request.args.get('filter', 'title')
+        search_query = request.args.get('search', '')
+
+        if search_query.strip():
+            if filter_choice == 'director':
+                search_results = Movie.query.filter(Movie.user_id == user_id, Movie.director.ilike(f"%{search_query}%")).all()
+
+            elif filter_choice == 'genre':
+                search_results = Movie.query.filter(Movie.user_id == user_id, Movie.genre.ilike(f"%{search_query}%")).all()
+
+            else:
+                search_results = Movie.query.filter(Movie.user_id == user_id, Movie.title.ilike(f"%{search_query}%")).all()
+
+            return render_template('dashboard.html', movies = search_results, user=user, filter_choice = filter_choice)
+        
+        else:
+            movies = Movie.query.filter_by(user_id=user_id).all()
+            return render_template('dashboard.html', movies=movies, user=user, filter_choice=filter_choice)
+
+
+
+        
+
+
+
+        
 
 
 #-------------------------------------------Movie--------------------------------------------------------------
