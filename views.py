@@ -92,6 +92,12 @@ def init_routes(app):
             elif filter_choice == 'genre':
                 search_results = Movie.query.filter(Movie.user_id == user_id, Movie.genre.ilike(f"%{search_query}%")).all()
 
+            elif filter_choice == 'year':
+                search_results = Movie.query.filter(Movie.user_id == user_id, Movie.year.ilike(f"%{search_query}")).all()
+
+            elif filter_choice == 'rating':
+                search_results = Movie.query.filter(Movie.user_id == user_id, Movie.rating.ilike(f"%{search_query}%")).all()
+
             else:
                 search_results = Movie.query.filter(Movie.user_id == user_id, Movie.title.ilike(f"%{search_query}%")).all()
 
@@ -121,6 +127,7 @@ def init_routes(app):
             #Handles image file / url upload
             image_file = request.files.get("image_file")
             image_url = request.form.get("image_url")
+
 
             if image_file and image_file.filename != "":
                 filename = secure_filename(image_file.filename)
