@@ -69,12 +69,13 @@ def init_routes(app):
     def dashboard():
         #Gets logged in user id
         user_id = session.get('user_id')
-        if 'user_id' not in session:
+        if not user_id:
             return render_template('login.html', message="Please log in or register.")
+        
         user = User.query.get(user_id)
 
         #Queries movies for the specific user.
-        movies = Movie.query.filter_by(user_id=user_id).all()
+        movies = Movie.query.filter(Movie.is_deleted == False, Movie.user_id == user_id).all()
         return render_template('dashboard.html', movies=movies, user=user, filter_choice='title')
     
     @app.route('/search', methods=['GET'])
@@ -201,14 +202,27 @@ def init_routes(app):
 
     @app.route('/delete', methods=['POST'])
     def delete_item():
-        #Deletes specified movie.
+        #'Deletes' specified movie.
 
         movie_id = request.form['id']
         movie = Movie.query.get_or_404(movie_id)
 
-        db.session.delete(movie)
+        movie.is_deleted = True
+
         db.session.commit()
+
+        flash(f'{movie.title} deleted. <a href="{url_for("undo_delete", id=movie_id)}">Undo</a>')
 
         return redirect(url_for('dashboard'))
     
 
+    @app.route('/undo', methods=['GET'])
+    def undo_delete(id):
+        movie = Movie.query.get_or_404(id)
+
+        movie.is_deleted = False
+
+        flash(f'Movie "{movie.title}" restored, success')
+
+        db.session.commit()
+        return redirect(url_for('dashboard'))

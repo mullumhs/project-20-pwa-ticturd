@@ -21,6 +21,9 @@ class Movie(db.Model):
     # Relationship back to User
     user = db.relationship('User', back_populates='movies')
 
+    #Determines whether movie is 'deleted' or not, allows for restoration.
+    is_deleted = db.Column(db.Boolean, default = False)
+
     def __repr__(self):
         return f'<Movie {self.title}>'
 
