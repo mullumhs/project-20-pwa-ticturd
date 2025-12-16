@@ -58,6 +58,33 @@
     {% endblock %}
   </div>
 
+<!-- Footer -->
+<footer class="mt-4">
+  <div class="container py-3 text-center">
+    <small>© 2025 Movie Watchlist. All Rights Reserved.</small>
+  </div>
+</footer>
+
+<!---- CSS to ensure the footer remains at the bottom of the page, wrapping the whole base with a flex body breaks all of my templates-->
+<style>
+  html, body {
+    height: 100%;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  main, .container.mt-4 {
+    flex: 1 0 auto;
+  }
+  footer {
+    flex-shrink: 0;
+  }
+</style>
+
+
+
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

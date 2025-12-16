@@ -28,7 +28,8 @@ def init_routes(app):
             #Checks database for existing usernames
             existing_user = User.query.filter_by(username=username).first()
             if existing_user != None:
-                return render_template('register.html', error=f'Username already exists.')
+                flash("Username already exists!", 'danger')
+                return redirect(url_for('register.html'))
             
             #Creates account, directs user to log in.
             else:
@@ -36,10 +37,15 @@ def init_routes(app):
                 new_user.set_password(password)
                 db.session.add(new_user)
                 db.session.commit()
-                return render_template('login.html', message="Please log in.")
+
+                session['user_id'] = new_user.id
+                
+                flash("Logged in successfully!", 'success')
+                return redirect(url_for('dashboard'))
             
-        else:
-             return render_template('register.html')
+
+        return render_template('register.html')
+        
         
     
     @app.route('/login', methods=['GET', 'POST'])
@@ -52,11 +58,14 @@ def init_routes(app):
             user = User.query.filter_by(username=username).first()
             if user and user.check_password(password):    
                 session['user_id'] = user.id
+
+                flash("Logged in successfully!", 'success')
                 return redirect(url_for('dashboard'))
             else:
-                return render_template('login.html', error="Invalid username or password.")
-        else:
-            return render_template('login.html')
+                flash("Username or password invalid.", 'danger')
+                return redirect(url_for('login.html'))
+        
+        return render_template('login.html')
         
     @app.route('/logout', methods=['GET', 'POST'])
     def logout():
@@ -120,7 +129,7 @@ def init_routes(app):
 #-------------------------------------------Movie--------------------------------------------------------------
 
     @app.route('/add', methods=['POST'])
-    def create_movie():
+    def add():
         #Handles adding a new movie to the database and linking it to the current user.
         if 'user_id' not in session:
             return render_template('login.html', error="User ID not in session")
@@ -158,12 +167,13 @@ def init_routes(app):
             db.session.add(new_movie)
             db.session.commit()
 
+            flash(f'Movie "{new_movie.title}" added successfully!', 'success')
             return redirect(url_for('dashboard'))
 
 
 
     @app.route('/update', methods=['POST'])
-    def update_item():
+    def update():
         #Again handles image upload / url changes
         movie_id = request.form['id']
         movie = Movie.query.get_or_404(movie_id)
@@ -196,12 +206,13 @@ def init_routes(app):
 
         db.session.commit()
 
+        flash(f'Movie "{movie.title}" updated successfully!', 'success')
         return redirect(url_for('dashboard'))
 
 
 
     @app.route('/delete', methods=['POST'])
-    def delete_item():
+    def delete():
         #'Deletes' specified movie.
 
         movie_id = request.form['id']
@@ -211,18 +222,18 @@ def init_routes(app):
 
         db.session.commit()
 
-        flash(f'{movie.title} deleted. <a href="{url_for("undo_delete", id=movie_id)}">Undo</a>')
+        flash(f'Movie "{movie.title}" deleted. <a href="{url_for("undo_delete", id=movie_id)}">Undo</a>', 'warning')
 
         return redirect(url_for('dashboard'))
     
 
-    @app.route('/undo', methods=['GET'])
+    @app.route('/undo_delete/<int:id>', methods=['GET'])
     def undo_delete(id):
         movie = Movie.query.get_or_404(id)
 
         movie.is_deleted = False
 
-        flash(f'Movie "{movie.title}" restored, success')
+        flash(f'Movie "{movie.title}" restored!', 'success')
 
         db.session.commit()
         return redirect(url_for('dashboard'))

@@ -27,7 +27,7 @@
 
 
 
-
+<!-----------Script used for image URL grabbing------------>
 <script>
 function previewDroppedImage(event, input) {
     const file = input.files[0];
@@ -62,59 +62,7 @@ function previewDroppedImage(event, input) {
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-<!-- CREATE MOVIE -->
-<button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#createMovieModal">
-  + Create Movie
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="createMovieModal" tabindex="-1" aria-labelledby="createMovieModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="createMovieModalLabel">Add New Movie</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <!-- Modal Body with Form -->
-      <div class="modal-body">
-        <form action="/add" method="POST" enctype="multipart/form-data">
-          <input type="text" name="title" class="form-control mb-2" placeholder="Title" required minlength="1" maxlength="100">
-          <input type="text" name="director" class="form-control mb-2" placeholder="Director" required minlength="1" max="100">
-          <input type="text" name="genre" class="form-control mb-2" placeholder="Genre" required minlength="1" maxlength="100">
-          <input type="number" name="year" class="form-control mb-2" placeholder="Year" required min="1880" max="2100">
-          <input type="number" step="0.1" name="rating" class="form-control mb-2" placeholder="Rating" required min="0" max="10">
-          <input type="text" name="description" class="form-control mb-2" placeholder="Description" required minlength="1" maxlength="2000">
-
-          <div class="image-upload-section mb-3">
-            <h6>Movie Image</h6>
-            <div class="image-drop-area border p-3 text-center"
-                 ondragover="event.preventDefault()"
-                 onclick="this.querySelector('input').click();">
-              <p>Drag & Drop image here or click to browse</p>
-              <input type="file" name="image_file" accept="image/*"
-                     onchange="previewDroppedImage(event, this)" style="display:none;">
-            </div>
-            <label class="mt-2">Or Image URL (optional)</label>
-            <input class="form-control" type="text" name="image_url" placeholder="https://...">
-            <img id="imagePreview" style="display:none; max-width:100%; margin-top:10px;">
-          </div>
-
-          <button type="submit" class="btn btn-primary w-100">Create</button>
-        </form>
-      </div>
-      
-      <!-- Modal Footer -->
-      <div class="modal-footer">
-        <form action="{{ url_for('logout') }}" method="GET">
-          <button type="submit" class="btn btn-secondary">Logout</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <!-------------------Movie Cards-------------------->
@@ -172,6 +120,13 @@ function previewDroppedImage(event, input) {
 
                     <input type="hidden" name="id" value="{{ movie.id }}">
 
+                    
+                      {% if movie.image %}
+                        <img src="{{ movie.image }}" class="card-img-top" alt="{{ movie.title }}">
+                      {% else %}
+                        <img src="https://via.placeholder.com/300x400?text=No+Image" class="card-img-top" alt="No image">
+                      {% endif %}
+              
                     <label>Title</label>
                     <input class="form-control" type="text" name="title" value="{{ movie.title }}" required minlength="1" maxlength="100">
 
@@ -214,7 +169,6 @@ function previewDroppedImage(event, input) {
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary" type="submit">Update</button>
                 </div>
 
@@ -247,15 +201,6 @@ function previewDroppedImage(event, input) {
         <p><strong>Rating:</strong> {{ movie.rating }}</p>
         <p><strong>Description:</strong> {{ movie.description }}</p>
       </div>
-      
-      <!-- Modal Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-      
-
-    
     </div>
   </div>
 </div>
@@ -264,7 +209,59 @@ function previewDroppedImage(event, input) {
 </div>
 
 
+<!-- CREATE MOVIE -->
+<button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#createMovieModal">
+  + Create Movie
+</button>
 
+<!-- Modal -->
+<div class="modal fade" id="createMovieModal" tabindex="-1" aria-labelledby="createMovieModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="createMovieModalLabel">Add New Movie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <!-- Modal Body with Form -->
+      <div class="modal-body">
+        <form action="/add" method="POST" enctype="multipart/form-data">
+          <input type="text" name="title" class="form-control mb-2" placeholder="Title" required minlength="1" maxlength="100">
+          <input type="text" name="director" class="form-control mb-2" placeholder="Director" required minlength="1" max="100">
+          <input type="text" name="genre" class="form-control mb-2" placeholder="Genre" required minlength="1" maxlength="100">
+          <input type="number" name="year" class="form-control mb-2" placeholder="Year" required min="1880" max="2100">
+          <input type="number" step="0.1" name="rating" class="form-control mb-2" placeholder="Rating" required min="0" max="10">
+          <input type="text" name="description" class="form-control mb-2" placeholder="Description" required minlength="1" maxlength="2000">
+
+          <div class="image-upload-section mb-3">
+            <h6>Movie Image</h6>
+            <div class="image-drop-area border p-3 text-center"
+                 ondragover="event.preventDefault()"
+                 onclick="this.querySelector('input').click();">
+              <p>Drag & Drop image here or click to browse</p>
+              <input type="file" name="image_file" accept="image/*"
+                     onchange="previewDroppedImage(event, this)" style="display:none;">
+            </div>
+            <label class="mt-2">Or Image URL (optional)</label>
+            <input class="form-control" type="text" name="image_url" placeholder="https://...">
+            <img id="imagePreview" style="display:none; max-width:100%; margin-top:10px;">
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Create</button>
+        </form>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <form action="{{ url_for('logout') }}" method="GET">
+          <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
     
 
 
