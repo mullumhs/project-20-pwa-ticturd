@@ -63,7 +63,7 @@ def init_routes(app):
                 return redirect(url_for('dashboard'))
             else:
                 flash("Username or password invalid.", 'danger')
-                return redirect(url_for('login.html'))
+                return redirect(url_for('login'))
         
         return render_template('login.html')
         
