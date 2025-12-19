@@ -79,7 +79,8 @@ def init_routes(app):
         #Gets logged in user id
         user_id = session.get('user_id', None)
         if not user_id:
-            return render_template('login.html', message="Please log in or register.")
+            flash(f'Please log in or <a href="{url_for('register')}">register</a>', 'danger')
+            return render_template('login.html')
         
         user = User.query.get(user_id)
 
